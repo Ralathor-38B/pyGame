@@ -22,16 +22,57 @@ def load_image(name, colorkey=None):
     return image
 
 
-def amount(num, n):
-    if num < n:
-        kind = choice(list(foes.reds.keys()))
-        foes.Enemies(screen, enemies, kind, foes.reds[kind], 1, 1300, 600,
-                            choice(list(foes.eng_alf.keys())))
-        foes_coords.append(1300)
-        return randint(7, 20)
+def start_screen():
+    intro_text = ["Когда-нибудь", "здесь будет название"]
+    screen = pygame.display.set_mode((500, 500))
+    running = True
+
+    fon = pygame.transform.scale(load_image(f'start/img{randint(1, 6)}.jpg'), (500, 500))
+    screen.blit(fon, (0, 0))
+
+    font1 = pygame.font.SysFont('comicsansms', 32)
+    font2 = pygame.font.SysFont('comicsansms', 33)
+    text_coord = 100
+
+    for line in intro_text:
+        text = font2.render(line, True, 'blue')
+        intro_rect = text.get_rect()
+        text_coord += 20
+        intro_rect.top = text_coord
+        intro_rect.x = (500 - intro_rect.width) // 2
+        screen.blit(text, intro_rect)
+
+        text = font1.render(line, 1, (255, 0, 255))
+        intro_rect = text.get_rect()
+        intro_rect.top = text_coord
+        intro_rect.x = (500 - intro_rect.width) // 2
+        text_coord += intro_rect.height
+        screen.blit(text, intro_rect)
+
+        pygame.display.flip()
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.quit()
+                running = False
 
 
-if __name__ == '__main__':
+def level(n):
+    n -= 1
+    regiment = 30 + 10 * (n % 3) + 5 * (n % 5)  # amount of enemies
+    a, b = 7 - n // 5, 22 - 2 * (n % 3)
+    speed = 10 + n // 3  # foes speed
+    return regiment, a, b, speed
+
+
+def play(regiment, a, b, speed):
+    pygame.init()
+    start_screen()
+    running = True
     pygame.init()
     all_sprites = pygame.sprite.Group()
     go = pygame.sprite.Group()
@@ -40,19 +81,18 @@ if __name__ == '__main__':
     enemies = pygame.sprite.Group()
     character_go = char.Heroes(go, 'wizard', "Walk_out.png", 7, 1, 100, 600)
     character_struggle = char.Heroes(struggle, 'wizard', "Attack_1_out.png", 7,
-                                1, 100, 600)
+                                     1, 100, 600)
     missile1 = char.Heroes(charges, 'wizard', "lightning_1.png", 3,
-                      1, 300, 200, plus=0)
+                           1, 300, 200, plus=0)
     missile2 = char.Heroes(charges, 'wizard', "lightning_3.png", 4,
-                      1, 285, 730, plus=0)
+                           1, 285, 730, plus=0)
 
-    running = True
     number = 0  # индекс текущего противника
-    count = randint(7, 20)  # через сколько смен экрана появится новый враг
-    REGIMENT = 30  # количество врагов в уровне
+    count = randint(a, b)  # через сколько смен экрана появится новый враг
+    foes.FOES_SPEED = speed
     LIVES = 3
     size = width, height = 1200, 900
-    screen = pygame.display.set_mode(size)
+    screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
     # region background initialise
     Background(all_sprites, 'sky_out.png', 'fixed', one_more=False)
@@ -67,8 +107,9 @@ if __name__ == '__main__':
         HPSymbol(all_sprites, 30 + i * 20, 50)
 
     kind = choice(list(foes.reds.keys()))
+    symbols = foes.eng_alf
     foes.Enemies(screen, enemies, kind, foes.reds[kind], 1, 1100, 600,
-                            choice(list(foes.eng_alf.keys())))
+                 choice(list(symbols.keys())))
     foes_coords = [1100]
 
     all_sprites.draw(screen)
@@ -91,7 +132,7 @@ if __name__ == '__main__':
                 if x > 300:
                     missile1.rect.x = x + 80
                     missile2.rect.x = x + 65
-                    if pygame.key.get_pressed()[foes.eng_alf[foe.symb]]:
+                    if pygame.key.get_pressed()[symbols[foe.symb]]:
                         foe.die()
                         number += 1
                     else:
@@ -112,7 +153,7 @@ if __name__ == '__main__':
         enemies.draw(screen)
         e = list(enemies)
         for i in range(len(e)):
-            e[i].print_letter((e[i].cur_frame - 1) % 10)
+            e[i].print_letter((e[i].cur_frame - 1) % 10)  # 10 frames in file 'Run+Attack_out.png'
             foes_coords[i] -= foes.FOES_SPEED
             if pygame.sprite.collide_mask(character_go, e[i]) and i == number:
                 LIVES -= 1
@@ -132,4 +173,14 @@ if __name__ == '__main__':
         if count:
             count -= 1
         else:
-            count = amount(number, REGIMENT)
+            count = randint(a, b)
+            if number < regiment:
+                kind = choice(list(foes.reds.keys()))
+                foes.Enemies(screen, enemies, kind, foes.reds[kind], 1, 1300, 600,
+                             choice(list(symbols.keys())))
+                foes_coords.append(1300)
+
+
+if __name__ == '__main__':
+    reg, a, b, s = level(1)
+    play(reg, a, b, s)
