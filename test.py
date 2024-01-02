@@ -1,24 +1,10 @@
-import os
-import sys
+from func_load_image import load_image
 import pygame
 
 pygame.init()
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    if colorkey is not None:
-        # image = image.convert()
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    return image
-
-
+# region Background static objects
 class Castle(pygame.sprite.Sprite):
     image = load_image("cas2.png", -1)
     width = 500
@@ -136,6 +122,7 @@ class Balloon(pygame.sprite.Sprite):
     def update_pos(self, x, y):
         self.rect.x = x
         self.rect.y = y
+# endregion
 
 
 def draw_background(sc):
@@ -147,6 +134,7 @@ def draw_background(sc):
     pygame.display.flip()
 
 
+# region Launch of background canvas
 all_sprites = pygame.sprite.Group()
 running = True
 size = width, height = 900, 600
@@ -160,3 +148,4 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     draw_background(screen)
+# endregion
