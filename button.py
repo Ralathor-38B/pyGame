@@ -4,7 +4,7 @@ import game
 
 
 class Button:
-    def __init__(self, sc, x, y, border, text=None, size_t=20, color_t='white', image=None):
+    def __init__(self, sc, x, y, border=None, text=None, size_t=20, color_t='white', image=None):
         self.sc = sc
         self.border = border
         self.text, self.size, self.color = text, size_t, color_t
@@ -15,10 +15,7 @@ class Button:
 
     def get_click(self, x, y):
         if self.left <= x <= self.right and self.top <= y <= self.down:
-            self.push()
-
-    def push(self):
-        pass
+            return True
 
     def draw(self):
         if self.image:
@@ -26,15 +23,16 @@ class Button:
             rect = img.get_rect()
             rect.y = self.top
             rect.x = self.left
-            sc.blit(img, rect)
+            self.sc.blit(img, rect)
         if self.text:
-            font = pygame.font.SysFont('comicsansms', self.size)
+            font = pygame.font.SysFont('segoeui', self.size)
             text = font.render(self.text, True, self.color)
             rect = text.get_rect()
             rect.y = self.top
             rect.x = self.left
-            sc.blit(text, rect)
-        pygame.draw.rect(self.sc, self.border, ((self.left - 10, self.top - 10),
+            self.sc.blit(text, rect)
+        if self.border:
+            pygame.draw.rect(self.sc, self.border, ((self.left - 10, self.top - 10),
                                                 (rect.width + 20, rect.height + 20)), 2)
         return rect.right + 20, rect.bottom + 20
 
@@ -55,7 +53,7 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 for but in buttons:
-                    but.get_click(x, y)
+                    clicked = but.get_click(x, y)
         sc.fill('blue')
         b.draw()
         t.draw()
