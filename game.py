@@ -1,49 +1,11 @@
 from random import choice, randint
-from function_load_image import load_image
-import pygame
-import character as char
-import foes
+from alphabet_to_keys import eng_alf
 from fon import Background, HPSymbol
+from level_results import show_level_results, start_screen
+import character as char
+import pygame
+import foes
 import sys
-
-
-def start_screen():
-    intro_text = ["Когда-нибудь", "здесь будет название"]
-    screen = pygame.display.set_mode((500, 500))
-    running = True
-
-    fon = pygame.transform.scale(load_image(f'start/img{randint(1, 6)}.jpg'), (500, 500))
-    screen.blit(fon, (0, 0))
-
-    font1 = pygame.font.SysFont('comicsansms', 32)
-    font2 = pygame.font.SysFont('comicsansms', 33)
-    text_coord = 100
-
-    for line in intro_text:
-        text = font2.render(line, True, 'blue')
-        intro_rect = text.get_rect()
-        text_coord += 20
-        intro_rect.top = text_coord
-        intro_rect.x = (500 - intro_rect.width) // 2
-        screen.blit(text, intro_rect)
-
-        text = font1.render(line, 1, (255, 0, 255))
-        intro_rect = text.get_rect()
-        intro_rect.top = text_coord
-        intro_rect.x = (500 - intro_rect.width) // 2
-        text_coord += intro_rect.height
-        screen.blit(text, intro_rect)
-
-        pygame.display.flip()
-
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                pygame.quit()
-                running = False
 
 
 def level(n):
@@ -67,9 +29,10 @@ def draw_hps():
         hp_sprites.append(current_hp)
 
 
-def play(regiment, a, b, speed):
+def play(regiment, a, b, speed, cur_level_number):
     global hp_sprites, all_sprites, LIVES
     pygame.init()
+    pygame.display.set_caption("Game")
     # start_screen()
     running = True
     hp_sprites = []
@@ -90,6 +53,8 @@ def play(regiment, a, b, speed):
     count = randint(a, b)  # через сколько смен экрана появится новый враг
     foes.FOES_SPEED = speed
     LIVES = 3
+    START_LIVES = LIVES
+    score_for_enemy, score_for_victory = 20, 200
     size = width, height = 1200, 650
     screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
@@ -109,7 +74,7 @@ def play(regiment, a, b, speed):
     # endregion
 
     kind = choice(list(foes.reds.keys()))
-    symbols = foes.eng_alf
+    symbols = eng_alf
     foes.Enemies(screen, enemies, kind, foes.reds[kind], 1, 1100, 370,
                  choice(list(symbols.keys())))
     foes_coords = [1100]
@@ -162,6 +127,9 @@ def play(regiment, a, b, speed):
                 LIVES -= 1
                 if LIVES == 0:
                     character_go.die()
+                    show_level_results(cur_level_number, (number + 1 - START_LIVES) * score_for_enemy, number + 1 - START_LIVES)
+                    running = False
+                    break
                 elif LIVES > 0:
                     character_go.hurt()
                     number += 1
@@ -185,5 +153,6 @@ def play(regiment, a, b, speed):
 
 
 if __name__ == '__main__':
-    reg, a, b, s = level(1)
-    play(reg, a, b, s)
+    level_for_launch = 1
+    reg, a, b, s = level(level_for_launch)
+    play(reg, a, b, s, level_for_launch)

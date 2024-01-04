@@ -43,6 +43,11 @@ class HPSymbol(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+    def set_size(self, w, h):
+        self.width = w
+        self.height = h
+        self.image = pygame.transform.scale(HPSymbol.image, (self.width, self.height))
+
 
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, state_type, sheet, columns, rows, x, y):

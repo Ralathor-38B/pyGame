@@ -3,12 +3,12 @@ import pygame
 
 
 class Button:
-    def __init__(self, sc, x, y, border=None, text=None, size_t=20, color_t='white', image=None):
+    def __init__(self, sc, x, y, border=None, text=None, size_t=20, color_t='white', image=None, t_family="segoeui"):
         self.sc = sc
         self.border = border
         self.text, self.size, self.color = text, size_t, color_t
         self.image = image
-
+        self.text_family = t_family
         self.left, self.top = x, y
         self.right, self.down = self.draw()
 
@@ -25,7 +25,7 @@ class Button:
             rect.x = self.left
             self.sc.blit(img, rect)
         if self.text:
-            font = pygame.font.SysFont('segoeui', self.size)
+            font = pygame.font.SysFont(self.text_family, self.size)
             text = font.render(self.text, True, self.color)
             rect = text.get_rect()
             rect.y = self.top
@@ -35,6 +35,9 @@ class Button:
             pygame.draw.rect(self.sc, self.border, ((self.left - 10, self.top - 10),
                                                     (rect.width + 20, rect.height + 20)), 2)
         return rect.right + 20, rect.bottom + 20
+
+    def set_text_family(self, new_text_family):
+        self.text_family = new_text_family
 
 
 if __name__ == '__main__':

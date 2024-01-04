@@ -14,7 +14,7 @@ def show_level_panel():
     screen = pygame.display.set_mode(size)
     screen.blit(back_image, im_rect)
     w, h = 150, 60
-    start_x, start_y = 100, 200
+    start_x, start_y = 115, 200
     str_len = 16
     current_number = 1
     level_buttons = []
@@ -40,6 +40,7 @@ def show_level_panel():
                 x, y = event.pos
                 for index in range(len(level_buttons)):
                     if level_buttons[index].get_click(x, y):
+                        pygame.quit()
                         level_number = index + 1
                         start_level(level_number)
                         running = False
@@ -48,7 +49,7 @@ def show_level_panel():
 
 def start_level(number):
     reg, a, b, s = game.level(number)
-    game.play(reg, a, b, s)
+    game.play(reg, a, b, s, number)
 
 
 if __name__ == "__main__":
