@@ -1,6 +1,5 @@
+from function_load_image import load_image
 import pygame
-
-import game
 
 
 class Button:
@@ -18,8 +17,9 @@ class Button:
             return True
 
     def draw(self):
+        rect = pygame.Rect((0, 0), (1, 1))
         if self.image:
-            img = game.load_image(self.image)
+            img = load_image(self.image)
             rect = img.get_rect()
             rect.y = self.top
             rect.x = self.left
@@ -33,16 +33,16 @@ class Button:
             self.sc.blit(text, rect)
         if self.border:
             pygame.draw.rect(self.sc, self.border, ((self.left - 10, self.top - 10),
-                                                (rect.width + 20, rect.height + 20)), 2)
+                                                    (rect.width + 20, rect.height + 20)), 2)
         return rect.right + 20, rect.bottom + 20
 
 
 if __name__ == '__main__':
     pygame.init()
-    sc = pygame.display.set_mode((630, 600))
+    screen = pygame.display.set_mode((630, 600))
 
-    b = Button(sc, 30, 30, 'yellow', image='hp_heart.png')
-    t = Button(sc, 250, 250, 'blue', text='bivfaehgbiu')
+    b = Button(screen, 30, 30, 'yellow', image='hp_heart.png')
+    t = Button(screen, 250, 250, 'blue', text='bivfaehgbiu')
     buttons = [b, t]
     running = True
     while running:
@@ -51,10 +51,10 @@ if __name__ == '__main__':
                                              pygame.key.get_pressed()[pygame.K_ESCAPE]):
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
+                cur_x, cur_y = event.pos
                 for but in buttons:
-                    clicked = but.get_click(x, y)
-        sc.fill('blue')
+                    clicked = but.get_click(cur_x, cur_y)
+        screen.fill('blue')
         b.draw()
         t.draw()
         pygame.display.flip()

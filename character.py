@@ -1,32 +1,19 @@
 import pygame
-import os
-import sys
-
-from fon import Background, HPSymbol
-
+from fon import Background
+from function_load_image import load_image
 
 DAMAGE = {'wizard': [4, 4]}  # папка персонажа: кол-во фреймов в его смерти, повреждении
 
 
-def load_image(folder, name, colorkey=None):
-    fullname = os.path.join('data/hero/', folder, name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    if colorkey is not None:
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    return image
-
-
 class Heroes(pygame.sprite.Sprite):
+    GENERAL_FOLDER_FOR_HEROES = 'hero'
+
     def __init__(self, type, folder, name, columns, rows, x, y, plus=0, reversed=False):
         super().__init__(type)
         self.frames = []
+        self.general_folder = f'{self.GENERAL_FOLDER_FOR_HEROES}/{folder}'
+        self.sheet = load_image(folder=self.general_folder, name=name, colorkey=-1)
         self.folder = folder
-        self.sheet = load_image(folder, name, -1)
         self.col = columns
         self.cut_sheet(self.sheet, columns, rows)
         self.cur_frame = 0
@@ -69,7 +56,8 @@ class Heroes(pygame.sprite.Sprite):
     def hurt(self):
         x, y = self.rect.x, self.rect.y
         self.frames.clear()
-        self.cut_sheet(load_image(self.folder, 'Hurt_out.png', -1), DAMAGE[self.folder][1], 1)
+        self.cut_sheet(load_image(folder=self.general_folder, name='Hurt_out.png', colorkey=-1), DAMAGE[self.folder][1],
+                       1)
         self.rect = self.rect.move(x, y)
         self.cur_frame = 0
         self.injured = True
@@ -77,7 +65,8 @@ class Heroes(pygame.sprite.Sprite):
     def die(self):
         x, y = self.rect.x, self.rect.y
         self.frames.clear()
-        self.cut_sheet(load_image(self.folder, 'Dead_out.png', -1), DAMAGE[self.folder][0], 1)
+        self.cut_sheet(load_image(folder=self.general_folder, name='Dead_out.png', colorkey=-1), DAMAGE[self.folder][0],
+                       1)
         self.rect = self.rect.move(x, y)
         self.cur_frame = 0
         self.alive = False
@@ -90,12 +79,12 @@ if __name__ == '__main__':
     struggle = pygame.sprite.Group()
     charges = pygame.sprite.Group()
     character_go = Heroes(go, 'wizard', "Walk_out.png", 7, 1, 100, 360)
-    character_struggle = Heroes(struggle,'wizard', "Attack_1_out.png", 7,
-                                        1, 100, 500)
+    character_struggle = Heroes(struggle, 'wizard', "Attack_1_out.png", 7,
+                                1, 100, 500)
     missile1 = Heroes(charges, 'wizard', "lightning_1.png", 3,
-                              1, 300, 200, plus=0)
+                      1, 300, 200, plus=0)
     missile3 = Heroes(charges, 'wizard', "lightning_3.png", 4,
-                              1, 285, 430, plus=0)
+                      1, 285, 430, plus=0)
     running = True
     size = width, height = 1200, 650
     screen = pygame.display.set_mode(size)

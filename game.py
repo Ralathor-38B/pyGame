@@ -1,25 +1,10 @@
-import os
-import sys
 from random import choice, randint
-
+from function_load_image import load_image
 import pygame
-
 import character as char
 import foes
 from fon import Background, HPSymbol
-
-
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    if colorkey is not None:
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    return image
+import sys
 
 
 def start_screen():
@@ -60,12 +45,14 @@ def start_screen():
                 pygame.quit()
                 running = False
 
+
 def level(n):
     n -= 1
     regiment = 30 + 10 * (n % 3) + 5 * (n % 5)  # amount of enemies
     a, b = 7 - n // 5, 22 - 2 * (n % 3)
     speed = 10 + n // 3  # foes speed
     return regiment, a, b, speed
+
 
 def draw_hps():
     global hp_sprites, all_sprites, LIVES
@@ -78,6 +65,7 @@ def draw_hps():
         current_hp = HPSymbol(all_sprites, x=start_x, y=start_y)
         start_x += HPSymbol.width + hp_margin
         hp_sprites.append(current_hp)
+
 
 def play(regiment, a, b, speed):
     global hp_sprites, all_sprites, LIVES

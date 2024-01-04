@@ -1,10 +1,7 @@
-import os
-import sys
-# from random import choice
-
 import pygame
-
-from fon import Background, HPSymbol
+from function_load_image import load_image
+from fon import Background
+# from random import choice
 
 FOES_SPEED = 10
 eng_alf = {"A": pygame.K_a,
@@ -37,24 +34,11 @@ eng_alf = {"A": pygame.K_a,
 reds = {'Attack.png': 13, 'Run_out.png': 7, 'Walk_out.png': 8, 'Run+Attack_out.png': 10}
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data/foes', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    if colorkey is not None:
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    return image
-
-
 class Enemies(pygame.sprite.Sprite):
     def __init__(self, canvas, type, name, columns, rows, x, y, symb='A'):
         super().__init__(type)
         self.frames = []
-        self.sheet = load_image(name, -1)
+        self.sheet = load_image(name, colorkey=-1, folder="foes")
         self.cut_sheet(self.sheet, columns, rows)
         self.cur_frame = columns - 1
         self.image = self.frames[self.cur_frame]
@@ -120,7 +104,7 @@ class Enemies(pygame.sprite.Sprite):
     def hurt(self):
         x, y = self.rect.x, self.rect.y
         self.frames.clear()
-        self.cut_sheet(load_image('Hurt_out.png', -1), 6, 1)
+        self.cut_sheet(load_image('Hurt_out.png', colorkey=-1, folder='foes'), 6, 1)
         self.rect = self.rect.move(x, y)
         self.cur_frame = 5
         self.injured = True
@@ -128,7 +112,7 @@ class Enemies(pygame.sprite.Sprite):
     def die(self):
         x, y = self.rect.x, self.rect.y
         self.frames.clear()
-        self.cut_sheet(load_image('Dead_out.png', -1), 3, 1)
+        self.cut_sheet(load_image('Dead_out.png', colorkey=-1, folder='foes'), 3, 1)
         self.rect = self.rect.move(x, y)
         self.cur_frame = 2
         self.alive = False
@@ -149,8 +133,6 @@ if __name__ == '__main__':
     rock1 = Background(all_sprites, 'rocks1.png', 'slow')
     rock2 = Background(all_sprites, 'rocks2.png', 'middle')
     cloud4 = Background(all_sprites, 'clouds4.png', 'fast')
-    for i in range(3):
-        HPSymbol(all_sprites, 30 + i * 20, 30)
     all_sprites.draw(screen)
     pygame.display.flip()
     fps = 60

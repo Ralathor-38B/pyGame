@@ -1,6 +1,6 @@
 import pygame
 from button import Button
-from fon import load_image
+from function_load_image import load_image
 import game
 
 
