@@ -1,6 +1,7 @@
 from function_load_image import load_image
 from random import randint
 from button import Button
+from level_panel import show_level_panel
 from fon import HPSymbol
 import pygame
 import sys
@@ -43,6 +44,47 @@ def start_screen():
             elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 pygame.quit()
                 running = False
+
+
+def show_start_screen():
+    pygame.init()
+    pygame.display.set_caption("Стартовая страница")
+    size = width, height = 700, 500
+    screen = pygame.display.set_mode(size)
+    background_filename = "opened_door2.jpg"
+    background_image = pygame.transform.scale(load_image(name=background_filename, folder='start'),
+                                              (width, height))
+    screen.blit(background_image, (0, 0, width, height))
+    title_size, title_color, title_text = 45, 'white', 'Play more - type better'
+    title_font = pygame.font.SysFont("segoeui", title_size, bold=True)
+    title = title_font.render(title_text, True, title_color)
+    start_title_x, start_title_y = 20, 20
+    screen.blit(title, (start_title_x, start_title_y))
+    opened_file = open('data/start/start_text.txt', encoding='UTF-8', mode='r')
+    text_lines = opened_file.readlines()
+    opened_file.close()
+    text_size = 20
+    text_color = "white"
+    font = pygame.font.SysFont("segoeui", text_size)
+    margin_y = 30
+    start_x, start_y = start_title_x, start_title_y + 40 + margin_y
+    for index in range(len(text_lines)):
+        text = font.render(text_lines[index].strip(), True, text_color)
+        screen.blit(text, (start_x, start_y))
+        start_y += margin_y
+    choose_button = Button(screen, start_x + 10, start_y + margin_y, border="white", text="Choose level", color_t="white")
+    choose_button.draw()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                cur_x, cur_y = event.pos
+                if choose_button.get_click(cur_x, cur_y):
+                    pygame.quit()
+                    show_level_panel()
+        pygame.display.flip()
 
 
 def show_level_results(level_number, score, killed_enemies, victory=False, current_lives=0):
@@ -112,4 +154,5 @@ def show_level_results(level_number, score, killed_enemies, victory=False, curre
 
 
 if __name__ == "__main__":
-    show_level_results(1, 2024, 44)
+    # show_level_results(1, 2024, 44)
+    show_start_screen()
