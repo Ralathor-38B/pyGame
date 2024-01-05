@@ -1,5 +1,6 @@
-from function_load_image import load_image
 import pygame
+
+from function_load_image import load_image
 
 
 class Button:
@@ -44,7 +45,7 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode((630, 600))
 
-    b = Button(screen, 30, 30, 'yellow', image='hp_heart.png')
+    b = Button(screen, 30, 30, 'yellow', image='password.png')
     t = Button(screen, 250, 250, 'blue', text='bivfaehgbiu')
     buttons = [b, t]
     running = True

@@ -1,17 +1,17 @@
+import sqlite3
 from random import choice, randint
+
 import pygame
+
 import character as char
 import foes
+import level_panel as panel
 import level_results as res
 from alphabet_to_keys import eng_alf
 from fon import Background, HPSymbol
-import sqlite3
-import level_panel as panel
 
 
-def start_level(number):
-    level_data = level(number)
-    play(*level_data, number)
+# import sys
 
 
 def level(n):
@@ -64,12 +64,13 @@ def play(regiment, a, b, speed, cur_level_number):
     screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
     # region background initialise
-    Background(all_sprites, 'sky_out.png', 'fixed', one_more=False)
-    Background(all_sprites, 'cloud1.png', 'slow')
-    Background(all_sprites, 'clouds2.png', 'middle')
-    Background(all_sprites, 'rocks1.png', 'slow')
-    Background(all_sprites, 'rocks2.png', 'middle')
-    Background(all_sprites, 'clouds4.png', 'fast')
+    folder = 'backgrounds/mountains/'
+    Background(all_sprites, f'{folder}sky_out.png', 'fixed', one_more=False)
+    Background(all_sprites, f'{folder}cloud1.png', 'slow')
+    Background(all_sprites, f'{folder}clouds2.png', 'middle')
+    Background(all_sprites, f'{folder}rocks1.png', 'slow')
+    Background(all_sprites, f'{folder}rocks2.png', 'middle')
+    Background(all_sprites, f'{folder}clouds4.png', 'fast')
     start_x, start_y = 20, 20
     hp_margin = 15
     for i in range(LIVES):
@@ -161,21 +162,16 @@ def play(regiment, a, b, speed, cur_level_number):
                 foes_coords.append(1300)
             elif end != 'not end':
                 pygame.quit()
-                res.show_level_results(cur_level_number,
-                                       (number - START_LIVES + LIVES) * score_for_enemy + score_for_victory,
+                res.show_level_results(cur_level_number, (number - START_LIVES + LIVES) * score_for_enemy,
                                        number - START_LIVES + LIVES, victory=end, current_lives=LIVES)
                 running = False
 
 
 if __name__ == '__main__':
-    """
     res.start_screen()
     con = sqlite3.connect('levels_settings')
     cur = con.cursor()
     level_for_launch = cur.execute('''SELECT id FROM levels_score WHERE current = 1''').fetchone()
-    panel.choice_page()
+    panel.show_level_panel()
     reg, a, b, s = level(level_for_launch[0])
-    """
     # play(reg, a, b, s, level_for_launch[0])
-    start_level(1)
-    pass
