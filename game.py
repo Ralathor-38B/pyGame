@@ -64,13 +64,34 @@ def play(regiment, a, b, speed, cur_level_number):
     screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
     # region background initialise
-    folder = 'backgrounds/mountains/'
-    Background(all_sprites, f'{folder}sky_out.png', 'fixed', one_more=False)
-    Background(all_sprites, f'{folder}cloud1.png', 'slow')
-    Background(all_sprites, f'{folder}clouds2.png', 'middle')
-    Background(all_sprites, f'{folder}rocks1.png', 'slow')
-    Background(all_sprites, f'{folder}rocks2.png', 'middle')
-    Background(all_sprites, f'{folder}clouds4.png', 'fast')
+    n = choice([1, 2, 3])
+    if n == 1:
+        folder = 'backgrounds/mountains/'
+        Background(all_sprites, f'{folder}sky_out.png', 'fixed', one_more=False)
+        Background(all_sprites, f'{folder}cloud1.png', 'slow')
+        Background(all_sprites, f'{folder}clouds2.png', 'middle')
+        Background(all_sprites, f'{folder}rocks1.png', 'slow')
+        Background(all_sprites, f'{folder}rocks2.png', 'middle')
+        Background(all_sprites, f'{folder}clouds4.png', 'fast')
+    elif n == 2:
+        folder = 'backgrounds/waterfall/'
+        Background(all_sprites, f'{folder}_sky.png', 'fixed', one_more=False)
+        Background(all_sprites, f'{folder}_clouds_1.png', 'slow')
+        Background(all_sprites, f'{folder}_rocks.png', 'slow')
+        Background(all_sprites, f'{folder}_ground.png', 'middle')
+        Background(all_sprites, f'{folder}_clouds_2.png', 'middle')
+    elif n == 3:
+        folder = 'backgrounds/forest/'
+        Background(all_sprites, f'{folder}7.png', 'fixed', one_more=False)
+        Background(all_sprites, f'{folder}_6.png', 'slow')
+        Background(all_sprites, f'{folder}_5.png', 'slow')
+        Background(all_sprites, f'{folder}_4.png', 'middle')
+        Background(all_sprites, f'{folder}cloud1.png', 'slow')
+        Background(all_sprites, f'{folder}_3.png', 'middle')
+        Background(all_sprites, f'{folder}_2.png', 'middle')
+        Background(all_sprites, f'{folder}_1.png', 'middle')
+        Background(all_sprites, f'{folder}_clouds_2.png', 'fast')
+
     start_x, start_y = 20, 20
     hp_margin = 15
     for i in range(LIVES):
