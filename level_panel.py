@@ -42,14 +42,9 @@ def show_level_panel():
                     if level_buttons[index].get_click(x, y):
                         pygame.quit()
                         level_number = index + 1
-                        start_level(level_number)
+                        game.start_level(level_number)
                         running = False
         pygame.display.flip()
-
-
-def start_level(number):
-    reg, a, b, s = game.level(number)
-    game.play(reg, a, b, s, number)
 
 
 if __name__ == "__main__":
