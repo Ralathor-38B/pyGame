@@ -2,6 +2,7 @@ import sqlite3
 import pygame
 
 import level_panel as panel
+import final_screen as f_sc
 from button import Button
 from fon import HPSymbol
 from function_load_image import load_image
@@ -9,7 +10,7 @@ from function_load_image import load_image
 
 def show_level_results(level_number, score, killed_enemies, victory=False, current_lives=0):
     pygame.init()
-    pygame.display.set_caption("Final screen")
+    pygame.display.set_caption("Score screen")
     all_sprites = pygame.sprite.Group()
     lives = current_lives
     key_state = "win" if victory else "lose"
@@ -78,9 +79,10 @@ def show_level_results(level_number, score, killed_enemies, victory=False, curre
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                pygame.quit()
+                f_sc.show_final_screen()
                 running = False
                 break
-                # pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 ev_x, ev_y = event.pos
                 if button_back_to_start.get_click(ev_x, ev_y):

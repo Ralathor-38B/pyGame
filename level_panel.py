@@ -3,7 +3,7 @@ import sqlite3
 import pygame
 
 import game
-import level_results as res
+import final_screen as f_sc
 from button import Button
 from function_load_image import load_image
 
@@ -49,7 +49,8 @@ def show_level_panel():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # pygame.quit()
+                pygame.quit()
+                f_sc.show_final_screen()
                 running = False
                 break
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -72,5 +73,4 @@ def start_level(number):
 
 
 if __name__ == "__main__":
-    res.start_screen()
     show_level_panel()

@@ -1,6 +1,7 @@
 from function_load_image import load_image
 from random import randint
 from button import Button
+import final_screen as f_sc
 import pygame
 import level_panel
 import sys
@@ -86,6 +87,8 @@ def show_start_screen():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.quit()
+                f_sc.show_final_screen()
                 running = False
                 break
             elif event.type == pygame.MOUSEBUTTONDOWN:

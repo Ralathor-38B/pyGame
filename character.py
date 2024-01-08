@@ -9,8 +9,8 @@ DAMAGE = {'wizard': [4, 4]}  # папка персонажа: кол-во фре
 class Heroes(pygame.sprite.Sprite):
     GENERAL_FOLDER_FOR_HEROES = 'hero'
 
-    def __init__(self, type, folder, name, columns, rows, x, y, plus=0, reversed=False):
-        super().__init__(type)
+    def __init__(self, in_type, folder, name, columns, rows, x, y, plus=0, q_reversed=False):
+        super().__init__(in_type)
         self.frames = []
         self.general_folder = f'{self.GENERAL_FOLDER_FOR_HEROES}/{folder}'
         self.sheet = load_image(folder=self.general_folder, name=name, colorkey=-1)
@@ -18,7 +18,7 @@ class Heroes(pygame.sprite.Sprite):
         self.col = columns
         self.cut_sheet(self.sheet, columns, rows)
         self.cur_frame = 0
-        if reversed:
+        if q_reversed:
             self.cur_frame = columns - 1
         self.image = self.frames[self.cur_frame]
         self.mask = pygame.mask.from_surface(self.image)

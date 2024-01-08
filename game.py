@@ -10,6 +10,7 @@ import level_results as res
 import start_screen as start_sc
 from alphabet_to_keys import eng_alf
 from fon import Background, HPSymbol
+import final_screen as f_sc
 
 
 # import sys
@@ -117,8 +118,8 @@ def play(regiment, l_bound, u_bound, speed, cur_level_number):
     fps = 60
     clock = pygame.time.Clock()
 
-    pygame.mixer.music.load(chosen_track)
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.music.load(chosen_track)
+    # pygame.mixer.music.play(-1)
 
     fight = False
     magic = False
@@ -129,8 +130,8 @@ def play(regiment, l_bound, u_bound, speed, cur_level_number):
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and
                                              pygame.key.get_pressed()[pygame.K_ESCAPE]):
                 running = False
-                # pygame.quit()
                 break
+                f_sc.show_final_screen()
             if event.type == pygame.KEYDOWN:
                 fight = True
                 foe = list(enemies)[number]
