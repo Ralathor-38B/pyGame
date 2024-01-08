@@ -47,17 +47,17 @@ def alter_start_screen():
 
 def show_start_screen():
     pygame.init()
-    pygame.display.set_caption("Стартовая страница")
-    size = width, height = 900, 550
+    pygame.display.set_caption("Start page")
+    size = width, height = 800, 550
     screen = pygame.display.set_mode(size)
-    background_filename = "v9.jpg"
+    background_filename = "whale_in_clouds.jpg" if randint(1, 100) == 27 else "clouds.jpg"
     background_image = pygame.transform.scale(load_image(name=background_filename, folder='start'),
                                               (width, height))
     screen.blit(background_image, (0, 0, width, height))
-    title_size, title_color, title_text = 35, (1, 35, 107), 'Play more - type better'
+    title_size, title_color, title_text = 35, (1, 35, 107), 'Slaughter of slimes'
     title_font = pygame.font.SysFont("comicsans", title_size, bold=True)
     title = title_font.render(title_text, True, title_color)
-    start_title_x, start_title_y = width // 2 - 250, 130
+    start_title_x, start_title_y = width // 2 - 250, 140
     bank_w, bank_h = 580, 350
     bank_im = pygame.transform.scale(load_image(name="bank2.jpg", folder='start'), (bank_w, bank_h))
     screen.blit(bank_im, (start_title_x - 45, start_title_y - 30))
@@ -78,11 +78,16 @@ def show_start_screen():
                            color_t=(1, 35, 107), t_family='comicsans')
     choose_button.draw()
     running = True
+    """
+    chosen_track = "music/"
+    pygame.mixer.music.load(chosen_track)
+    pygame.mixer.music.play(-1)
+    """
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                sys.exit()
+                break
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 cur_x, cur_y = event.pos
                 if choose_button.get_click(cur_x, cur_y):

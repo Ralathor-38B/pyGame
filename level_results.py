@@ -1,52 +1,10 @@
 import sqlite3
-import sys
-from random import randint
-
 import pygame
 
 import level_panel as panel
 from button import Button
 from fon import HPSymbol
 from function_load_image import load_image
-
-
-def start_screen():
-    intro_text = ["Когда-нибудь", "здесь будет название"]
-    screen = pygame.display.set_mode((500, 500))
-    running = True
-
-    fon = pygame.transform.scale(load_image(f'start/img{randint(1, 6)}.jpg'), (500, 500))
-    screen.blit(fon, (0, 0))
-
-    font1 = pygame.font.SysFont('comicsansms', 32)
-    font2 = pygame.font.SysFont('comicsansms', 33)
-    text_coord = 100
-
-    for line in intro_text:
-        text = font2.render(line, True, 'blue')
-        intro_rect = text.get_rect()
-        text_coord += 20
-        intro_rect.top = text_coord
-        intro_rect.x = (500 - intro_rect.width) // 2
-        screen.blit(text, intro_rect)
-
-        text = font1.render(line, 1, (255, 0, 255))
-        intro_rect = text.get_rect()
-        intro_rect.top = text_coord
-        intro_rect.x = (500 - intro_rect.width) // 2
-        text_coord += intro_rect.height
-        screen.blit(text, intro_rect)
-
-        pygame.display.flip()
-
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                pygame.quit()
-                running = False
 
 
 def show_level_results(level_number, score, killed_enemies, victory=False, current_lives=0):
@@ -56,11 +14,16 @@ def show_level_results(level_number, score, killed_enemies, victory=False, curre
     lives = current_lives
     key_state = "win" if victory else "lose"
     background_images = {"win": 'fon3.jpg', "lose": "loose.jpg"}
-    title_texts = {"win": "You win!", "lose": "You lose!"}
+    title_texts = {"win": "You are the winner!", "lose": "Sorry, but you lost!"}
     back_filename = background_images[key_state]
     note_filename = 'bank.png'
     size = width, height = 800, 480
-
+    """
+    music_state_dict = {"win": "", "loose": ""}
+    chosen_track = f"music/{music_state_dict[key_state]}"
+    pygame.mixer.music.load(chosen_track)
+    pygame.mixer.music.play(-1)
+    """
     con = sqlite3.connect('levels_settings')
     cur = con.cursor()
     if victory:
@@ -116,7 +79,8 @@ def show_level_results(level_number, score, killed_enemies, victory=False, curre
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
-                pygame.quit()
+                break
+                # pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 ev_x, ev_y = event.pos
                 if button_back_to_start.get_click(ev_x, ev_y):

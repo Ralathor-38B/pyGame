@@ -10,7 +10,7 @@ from function_load_image import load_image
 
 def show_level_panel():
     pygame.init()
-    pygame.display.set_caption("Выбор уровня")
+    pygame.display.set_caption("Level panel")
     back_filename = 'star_sky3.jpg'
     size = width, height = 650, 640
     back_image = pygame.transform.scale(load_image(back_filename), (width, height))
@@ -49,8 +49,9 @@ def show_level_panel():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                # pygame.quit()
                 running = False
+                break
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 x, y = event.pos
                 for index in range(len(level_buttons)):

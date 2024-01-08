@@ -7,6 +7,7 @@ import character as char
 import foes
 import level_panel as panel
 import level_results as res
+import start_screen as start_sc
 from alphabet_to_keys import eng_alf
 from fon import Background, HPSymbol
 
@@ -16,27 +17,26 @@ from fon import Background, HPSymbol
 
 def level(n):
     n -= 1
-    regiment = 30 + 10 * (n % 3) + 5 * (n % 5)  # amount of enemies
-    a, b = 7 - n // 5, 22 - 2 * (n % 3)
+    regiment = 17 + 10 * (n % 3) + 5 * (n % 5)  # amount of enemies
+    l_bound, u_bound = 7 - n // 5, 22 - 2 * (n % 3)
     speed = 10 + n // 3
-    return regiment, a, b, speed
+    return regiment, l_bound, u_bound, speed
 
 
-def draw_hps():
-    global hp_sprites, all_sprites, LIVES
-    for hp_sprite in hp_sprites:
+def draw_hps(hp_sprites_list, main_sprites, quantity):
+    for hp_sprite in hp_sprites_list:
         hp_sprite.kill()
-    hp_sprites = []
+    hp_sprites_list = []
     start_x, start_y = 20, 20
     hp_margin = 15
-    for i in range(LIVES):
-        current_hp = HPSymbol(all_sprites, x=start_x, y=start_y)
+    for i in range(quantity):
+        current_hp = HPSymbol(main_sprites, x=start_x, y=start_y)
         start_x += HPSymbol.width + hp_margin
-        hp_sprites.append(current_hp)
+        hp_sprites_list.append(current_hp)
+    return hp_sprites_list, main_sprites
 
 
-def play(regiment, a, b, speed, cur_level_number):
-    global hp_sprites, all_sprites, LIVES
+def play(regiment, l_bound, u_bound, speed, cur_level_number):
     pygame.init()
     pygame.display.set_caption(f"Level {cur_level_number}")
     running = True
@@ -55,13 +55,19 @@ def play(regiment, a, b, speed, cur_level_number):
                            1, 285, 430, plus=0)
 
     number = 0  # индекс текущего противника
-    count = randint(a, b)  # через сколько смен экрана появится новый враг
+    count = randint(l_bound, u_bound)  # через сколько смен экрана появится новый враг
     foes.FOES_SPEED = speed
-    LIVES = 3
-    START_LIVES = LIVES
+    lives = 3
+    start_lives = lives
     score_for_enemy, score_for_victory = 20, 200
-    size = width, height = 1200, 650
+    size = 1200, 650
     screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+    directory_music = "music"
+    music_achieve = ["example.wav", "battle_for_eternity.wav", "epic_war_is_fight.wav", "gloryham.wav", "hootsforce.wav"
+                     "legendary_enchanted_jetpack.wav", "masters_of_the_galaxy.wav", "power_of_dragon_fire.wav",
+                     "quest_for_the_hammer.wav", "ser_proletius_returns.wav", "the_king_of_california.wav",
+                     "the_land_of_unicorns.wav"]
+    chosen_track = f"{directory_music}/{choice(music_achieve)}"
 
     # region background initialise
     n = choice([1, 2, 3])
@@ -94,7 +100,7 @@ def play(regiment, a, b, speed, cur_level_number):
 
     start_x, start_y = 20, 20
     hp_margin = 15
-    for i in range(LIVES):
+    for i in range(lives):
         current_hp = HPSymbol(all_sprites, x=start_x, y=start_y)
         start_x += HPSymbol.width + hp_margin
         hp_sprites.append(current_hp)
@@ -111,6 +117,9 @@ def play(regiment, a, b, speed, cur_level_number):
     fps = 60
     clock = pygame.time.Clock()
 
+    pygame.mixer.music.load(chosen_track)
+    pygame.mixer.music.play(-1)
+
     fight = False
     magic = False
     end = 'not end'
@@ -120,7 +129,8 @@ def play(regiment, a, b, speed, cur_level_number):
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and
                                              pygame.key.get_pressed()[pygame.K_ESCAPE]):
                 running = False
-                pygame.quit()
+                # pygame.quit()
+                break
             if event.type == pygame.KEYDOWN:
                 fight = True
                 foe = list(enemies)[number]
@@ -137,7 +147,7 @@ def play(regiment, a, b, speed, cur_level_number):
                     else:
                         foe.hurt()
         all_sprites.update()
-        draw_hps()
+        hp_sprites, all_sprites = draw_hps(hp_sprites, all_sprites, lives)
         all_sprites.draw(screen)
         if not fight:
             go.update()
@@ -156,13 +166,13 @@ def play(regiment, a, b, speed, cur_level_number):
             e[i].print_letter((e[i].cur_frame - 1) % 10)  # 10 frames in file 'Run+Attack_out.png'
             foes_coords[i] -= foes.FOES_SPEED
             if foes_coords[i] <= 200 and i == number:
-                LIVES -= 1
+                lives -= 1
                 number += 1
-                if LIVES == 0:
+                if lives == 0:
                     character_go.die()
                     end = False
                     count = 15
-                elif LIVES > 0:
+                elif lives > 0:
                     character_go.hurt()
         if magic:
             charges.update()
@@ -175,21 +185,21 @@ def play(regiment, a, b, speed, cur_level_number):
         if count:
             count -= 1
         else:
-            count = randint(a, b)
+            count = randint(l_bound, u_bound)
             if len(e) < regiment:
                 kind = choice(list(foes.reds.keys()))
                 foes.Enemies(screen, enemies, kind, foes.reds[kind], 1, 1300, 370,
                              choice(list(symbols.keys())))
                 foes_coords.append(1300)
-            elif end != 'not end':
+            if end != 'not end':
                 pygame.quit()
-                res.show_level_results(cur_level_number, (number - START_LIVES + LIVES) * score_for_enemy,
-                                       number - START_LIVES + LIVES, victory=end, current_lives=LIVES)
+                res.show_level_results(cur_level_number, (number - start_lives + lives) * score_for_enemy,
+                                       number - start_lives + lives, victory=end, current_lives=lives)
                 running = False
 
 
 if __name__ == '__main__':
-    res.start_screen()
+    start_sc.show_start_screen()
     con = sqlite3.connect('levels_settings')
     cur = con.cursor()
     level_for_launch = cur.execute('''SELECT id FROM levels_score WHERE current = 1''').fetchone()
