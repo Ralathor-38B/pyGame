@@ -34,13 +34,13 @@ def show_final_screen():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                running = False
-                break
                 pygame.quit()
-        pygame.display.flip()
+                running = False
         if pygame.time.get_ticks() > tick_time:
-            break
-            # pygame.quit()
+            pygame.quit()
+            running = False
+        if running:
+            pygame.display.flip()
 
 
 if __name__ == "__main__":

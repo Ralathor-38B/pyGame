@@ -89,9 +89,10 @@ def show_level_results(level_number, score, killed_enemies, victory=False, curre
                     running = False
                     pygame.quit()
                     panel.show_level_panel()
-        all_sprites.update()
-        all_sprites.draw(screen)
-        pygame.display.flip()
+        if running:
+            all_sprites.update()
+            all_sprites.draw(screen)
+            pygame.display.flip()
 
 
 if __name__ == "__main__":

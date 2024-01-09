@@ -90,13 +90,13 @@ def show_start_screen():
                 pygame.quit()
                 f_sc.show_final_screen()
                 running = False
-                break
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 cur_x, cur_y = event.pos
                 if choose_button.get_click(cur_x, cur_y):
                     pygame.quit()
                     level_panel.show_level_panel()
-        pygame.display.flip()
+        if running:
+            pygame.display.flip()
 
 
 if __name__ == "__main__":

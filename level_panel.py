@@ -64,7 +64,8 @@ def show_level_panel():
                         con.commit()
                         start_level(level_number)
                         running = False
-        pygame.display.flip()
+        if running:
+            pygame.display.flip()
 
 
 def start_level(number):
