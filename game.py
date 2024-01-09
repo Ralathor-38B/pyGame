@@ -10,7 +10,6 @@ import level_results as res
 import start_screen as start_sc
 from alphabet_to_keys import eng_alf
 from fon import Background, HPSymbol
-import final_screen as f_sc
 
 
 # import sys
@@ -64,10 +63,13 @@ def play(regiment, l_bound, u_bound, speed, cur_level_number):
     size = 1200, 650
     screen = pygame.display.set_mode(size, pygame.RESIZABLE)
     directory_music = "music"
-    music_achieve = ["example.wav", "battle_for_eternity.wav", "epic_war_is_fight.wav", "gloryham.wav", "hootsforce.wav"
-                     "legendary_enchanted_jetpack.wav", "masters_of_the_galaxy.wav", "power_of_dragon_fire.wav",
-                     "quest_for_the_hammer.wav", "ser_proletius_returns.wav", "the_king_of_california.wav",
-                     "the_land_of_unicorns.wav"]
+    # music_achieve = ["example.wav", "battle_for_eternity.wav", "epic_war_is_fight.wav", "gloryham.wav",
+    #                  "hootsforce.wav", "legendary_enchanted_jetpack.wav", "masters_of_the_galaxy.wav",
+    #                  "power_of_dragon_fire.wav", "quest_for_the_hammer.wav", "ser_proletius_returns.wav",
+    #                  "the_king_of_california.wav", "the_land_of_unicorns.wav"]
+    music_achieve = ['Battle_for_Eternity.mp3', 'Gloryhammer.mp3', 'Hootsforce.mp3', 'Legendary_Enchanted_Jetpack.mp3',
+                     'Masters_of_the_Galaxy.mp3', 'The_Land_of_Unicorns.mp3', 'Ser_Proletius_Returns.mp3',
+                     'The_King_of_California.mp3']
     chosen_track = f"{directory_music}/{choice(music_achieve)}"
 
     # region background initialise
@@ -118,8 +120,8 @@ def play(regiment, l_bound, u_bound, speed, cur_level_number):
     fps = 60
     clock = pygame.time.Clock()
 
-    # pygame.mixer.music.load(chosen_track)
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.music.load(chosen_track)
+    pygame.mixer.music.play(-1)
 
     fight = False
     magic = False
@@ -130,8 +132,8 @@ def play(regiment, l_bound, u_bound, speed, cur_level_number):
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and
                                              pygame.key.get_pressed()[pygame.K_ESCAPE]):
                 running = False
+                # pygame.quit()
                 break
-                f_sc.show_final_screen()
             if event.type == pygame.KEYDOWN:
                 fight = True
                 foe = list(enemies)[number]
@@ -147,6 +149,9 @@ def play(regiment, l_bound, u_bound, speed, cur_level_number):
                             end = True
                     else:
                         foe.hurt()
+                if pygame.key.get_pressed()[pygame.K_LCTRL] and pygame.key.get_pressed()[pygame.K_SPACE]:
+                    pygame.mixer.music.load(f"{directory_music}/{choice(music_achieve)}")
+                    pygame.mixer.music.play(-1)
         all_sprites.update()
         hp_sprites, all_sprites = draw_hps(hp_sprites, all_sprites, lives)
         all_sprites.draw(screen)
